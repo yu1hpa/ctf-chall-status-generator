@@ -83,21 +83,21 @@ impl ChallengeTested {
 }
 
 fn write_challenge_to_readme<P: AsRef<Path>>(path: P) -> Result<(), IoError> {
-    let mut readme_file = File::create(path.as_ref().join("TESTED.md"))?;
+    let mut tested_file = File::create(path.as_ref().join("TESTED.md"))?;
 
     writeln!(
-        readme_file,
+        tested_file,
         "| tested | name | author | category | tags | tested by | tested URL |",
     )?;
     writeln!(
-        readme_file,
+        tested_file,
         "|--------|------|--------|----------|------|-----------|------------|",
     )?;
 
     for entry in WalkDir::new(path).into_iter().filter_map(|e| e.ok()) {
         match ChallengeTested::from_dir_entry(&entry) {
             Ok(challenge_tested) => {
-                writeln!(readme_file, "{}", challenge_tested.to_markdown_row())?;
+                writeln!(tested_file, "{}", challenge_tested.to_markdown_row())?;
             }
             _ => {}
         }
