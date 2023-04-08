@@ -24,11 +24,8 @@ struct Cli {
     )]
     tested_yml: Option<String>,
 
-    #[arg(long, help = "ディレクトリパス", default_value = "./")]
+    #[arg(long, help = "作問ディレクトリパス", default_value = "./")]
     dir_path: Option<String>,
-
-    #[arg(long, help = "出力先のパス", default_value = "./")]
-    output_path: Option<String>,
 }
 
 #[derive(Debug, PartialEq, Deserialize)]
@@ -110,7 +107,8 @@ fn write_challenge_to_readme<P: AsRef<Path>>(path: P) -> Result<(), IoError> {
 }
 
 fn main() {
-    if let Err(err) = write_challenge_to_readme(".") {
+    let cli = Cli::parse();
+    if let Err(err) = write_challenge_to_readme(&cli.dir_path.unwrap()) {
         eprintln!("Error writing to README.md: {}", err);
     }
 }
