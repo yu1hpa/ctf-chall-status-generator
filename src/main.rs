@@ -42,6 +42,9 @@ struct Challenge {
 #[derive(Debug, PartialEq, Deserialize)]
 struct Tested {
     tested: bool,
+    tester: String,
+    solver: String,
+    tested_url: String,
 }
 
 #[derive(Debug, PartialEq, Deserialize)]
@@ -70,12 +73,14 @@ impl ChallengeTested {
     fn to_markdown_row(&self) -> String {
         let tags = self.challenge.tags.join(", ");
         format!(
-            "| {} | {} | {} | {} | {} |",
-            self.tested.tested,
+            "| {} | {} | {} | {} | {} | {} | {} |",
+            if self.tested.tested { "✅" } else { "❌" },
             self.challenge.name,
             self.challenge.author,
             self.challenge.category,
             tags,
+            self.tested.tester,
+            self.tested.tested_url
         )
     }
 }
@@ -83,8 +88,14 @@ impl ChallengeTested {
 fn write_challenge_to_readme<P: AsRef<Path>>(path: P) -> Result<(), IoError> {
     let mut readme_file = File::create(path.as_ref().join("README.md"))?;
 
-    writeln!(readme_file, "| tested | name | author | category | tags |",)?;
-    writeln!(readme_file, "|--------|------|--------|----------|------|",)?;
+    writeln!(
+        readme_file,
+        "| tested | name | author | category | tags | tested by | tested URL |",
+    )?;
+    writeln!(
+        readme_file,
+        "|--------|------|--------|----------|------|-----------|------------|",
+    )?;
 
     for entry in WalkDir::new(path).into_iter().filter_map(|e| e.ok()) {
         match ChallengeTested::from_dir_entry(&entry) {
