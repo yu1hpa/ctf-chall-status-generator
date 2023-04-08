@@ -83,7 +83,7 @@ impl ChallengeTested {
 }
 
 fn write_challenge_to_readme<P: AsRef<Path>>(path: P) -> Result<(), IoError> {
-    let mut readme_file = File::create(path.as_ref().join("README.md"))?;
+    let mut readme_file = File::create(path.as_ref().join("TESTED.md"))?;
 
     writeln!(
         readme_file,
@@ -109,6 +109,6 @@ fn write_challenge_to_readme<P: AsRef<Path>>(path: P) -> Result<(), IoError> {
 fn main() {
     let cli = Cli::parse();
     if let Err(err) = write_challenge_to_readme(&cli.dir_path.unwrap()) {
-        eprintln!("Error writing to README.md: {}", err);
+        eprintln!("Error writing to TESTED.md: {}", err);
     }
 }
